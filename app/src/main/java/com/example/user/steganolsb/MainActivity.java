@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     String str = "Hello World";
     String teks;
     Image image;
-    String uri;
+    String uri, uriTxt;
     String pathFile, pathFileTxt;
     String nameFile, nameFileTxt;
     private ArrayList<String> filePaths;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectedFilePaths(String[] files) {
                 Toast.makeText(MainActivity.this, files[0], Toast.LENGTH_SHORT).show();
-                uri = files[0];
+                uriTxt = files[0];
                 //files is the array of the paths of files selected by the Application User.
                 String[] name = files[0].split("/");
                 String path="";
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 pathFileTxt = path;
                 teks = file2text(files[0]);
                 cTeks.setText(file2text(files[0]));
+                Toast.makeText(MainActivity.this, Integer.toString(file2text(files[0]).length()), Toast.LENGTH_SHORT).show();
                 nameFileTxt = name[name.length-1];
             }
         });
@@ -199,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
 //        String ln = Integer.toString(t.getLength());
         pTeks.setText(t.extract());
         Toast.makeText(this, t.extract() , Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Integer.toString(t.getLength()) , Toast.LENGTH_SHORT).show();
     }
 
     public void encryptAES(View view) {
