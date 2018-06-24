@@ -144,11 +144,10 @@ public class MainActivity extends AppCompatActivity {
     public void encryptAES(View view) {
         String plain = pTeks.getText().toString();
         String key = kTeks.getText().toString();
-        AES128 aes = new AES128(plain,key);
-        aes.generateRoundKey();
+        AES128Enkripsi aes = new AES128Enkripsi(plain,key);
         aes.enkripsi();
 
-        teks = aes.getPesan();
+        teks = aes.getChiper();
         cTeks.setText(teks);
         Toast.makeText(this, teks, Toast.LENGTH_SHORT).show();
     }
@@ -156,10 +155,8 @@ public class MainActivity extends AppCompatActivity {
     public void decryptAES(View view) {
         String plain = pTeks.getText().toString();
         String key = kTeks.getText().toString();
-        AES128 aes = new AES128(plain,key);
-        aes.generateRoundKey();
+        AES128Dekripsi aes = new AES128Dekripsi(plain,key);
         aes.dekripsi();
-
         teks = aes.getPesan();
         cTeks.setText(teks);
         Toast.makeText(this, teks, Toast.LENGTH_SHORT).show();
