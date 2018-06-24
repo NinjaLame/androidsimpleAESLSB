@@ -67,7 +67,7 @@ public class LSB {
     //change bbinary to int
     public int bin2int(int bin[]){
         int n=0;
-        int[] lookup={128,64,32,16,8,4,2,1};
+        int[] lookup={32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
 
         for(int i=0;i<bin.length;i++){
             if(bin[i]==1){
@@ -117,18 +117,35 @@ public class LSB {
 
         return bin;
     }
+    public int[] int2bin2(int n){
+        int[] lookup={32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
+        int[] bin=new int[lookup.length];
+        for(int i=0;i<lookup.length;i++){
+            if(n<lookup[i]){
+                bin[i]=0;
+            }else{
+                bin[i]=1;
+                n=n%lookup[i];
+            }
+            System.out.print(Integer.toString(bin[i]));
+        }
+        System.out.println("");
+
+        return bin;
+    }
     //convert string to binary
     @RequiresApi(api = Build.VERSION_CODES.N)
     public int[] toBinary(String str){
-        int[] bin = new int[(str.length()*8)+8];
+        int[] bin = new int[(str.length()*8)+16];
         int i,j,k; // iterasi;
-        int[] lenInBin = int2bin(str.length());
-        for(i=0;i<8;i++){
+        int tlength = str.length();
+        int[] lenInBin = int2bin2(tlength);
+        for(i=0;i<16;i++){
             bin[i]=lenInBin[i];
         }
         for(i=0;i<str.length();i++){
             int[] temp = int2bin((int)str.charAt(i));
-            for(j=(i+1)*8,k=0;k<8;j++,k++){
+            for(j=(i+2)*8,k=0;k<8;j++,k++){
                 bin[j]=temp[k];
 
             }
@@ -138,8 +155,8 @@ public class LSB {
     }
     //get textLength from binarry array
     public int textLength(int[] bin ){
-        int[] temp=new int[8];
-        for(int i=0;i<8;i++){
+        int[] temp=new int[16];
+        for(int i=0;i<16;i++){
             temp[i] = bin[i];
         }
         return bin2int(temp);

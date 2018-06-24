@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,10 +25,12 @@ import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -43,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
     String str = "Hello World";
     String teks;
     Image image;
-    String uri;
-    String pathFile;
-    String nameFile;
+    String uri, uriTxt;
+    String pathFile, pathFileTxt;
+    String nameFile, nameFileTxt;
     private ArrayList<String> filePaths;
 
     @Override
@@ -56,8 +59,65 @@ public class MainActivity extends AppCompatActivity {
         pTeks = (EditText) findViewById(R.id.pText);
         kTeks = (EditText) findViewById(R.id.kText);
         cTeks = (TextView) findViewById(R.id.chiperText);
+        cTeks.setMovementMethod(new ScrollingMovementMethod());
+        pTeks.setMovementMethod(new ScrollingMovementMethod());
     }
+    public void getTxtFile(View view) {
+        DialogProperties properties = new DialogProperties();
 
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = new File("/");
+        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
+        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
+        properties.extensions = null;
+
+        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this,properties);
+        dialog.setTitle("Select a File");
+
+        dialog.setDialogSelectionListener(new DialogSelectionListener() {
+            @Override
+            public void onSelectedFilePaths(String[] files) {
+                Toast.makeText(MainActivity.this, files[0], Toast.LENGTH_SHORT).show();
+                uriTxt = files[0];
+                //files is the array of the paths of files selected by the Application User.
+                String[] name = files[0].split("/");
+                String path="";
+                for(int i = 0; i<name.length-1;i++){
+                    path = path+name[i]+"/";
+                }
+
+                pathFileTxt = path;
+                teks = file2text(files[0]);
+                cTeks.setText(file2text(files[0]));
+                Toast.makeText(MainActivity.this, Integer.toString(file2text(files[0]).length()), Toast.LENGTH_SHORT).show();
+                nameFileTxt = name[name.length-1];
+            }
+        });
+
+        dialog.show();
+    }
+    public String file2text(String path){
+        File file = new File(path);
+
+//Read text from file
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+        return  text.toString();
+    }
     public void galery(View view) {
         DialogProperties properties = new DialogProperties();
 
@@ -99,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 //        ProgressDialog.show(this, "Loading", "Wait while pixels changes...");
         LSB t = new LSB(myBitmap);
         myBitmap = t.embeding(teks);
+
+
 //        Toast.makeText(this, te.length(), Toast.LENGTH_SHORT).show();
         String FilePath = pathFile;
 
@@ -139,16 +201,16 @@ public class MainActivity extends AppCompatActivity {
 //        String ln = Integer.toString(t.getLength());
         pTeks.setText(t.extract());
         Toast.makeText(this, t.extract() , Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Integer.toString(t.getLength()) , Toast.LENGTH_SHORT).show();
     }
 
     public void encryptAES(View view) {
         String plain = pTeks.getText().toString();
         String key = kTeks.getText().toString();
-        AES128 aes = new AES128(plain,key);
-        aes.generateRoundKey();
+        AES128Enkripsi aes = new AES128Enkripsi(plain,key);
         aes.enkripsi();
 
-        teks = aes.getPesan();
+        teks = aes.getChiper();
         cTeks.setText(teks);
         Toast.makeText(this, teks, Toast.LENGTH_SHORT).show();
     }
@@ -156,12 +218,12 @@ public class MainActivity extends AppCompatActivity {
     public void decryptAES(View view) {
         String plain = pTeks.getText().toString();
         String key = kTeks.getText().toString();
-        AES128 aes = new AES128(plain,key);
-        aes.generateRoundKey();
+        AES128Dekripsi aes = new AES128Dekripsi(plain,key);
         aes.dekripsi();
-
         teks = aes.getPesan();
         cTeks.setText(teks);
         Toast.makeText(this, teks, Toast.LENGTH_SHORT).show();
     }
+
+
 }
