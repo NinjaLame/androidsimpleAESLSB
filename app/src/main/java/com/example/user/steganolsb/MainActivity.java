@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         kTeks = (EditText) findViewById(R.id.kText);
         cTeks = (TextView) findViewById(R.id.chiperText);
         cTeks.setMovementMethod(new ScrollingMovementMethod());
+        pTeks.setMovementMethod(new ScrollingMovementMethod());
     }
     public void getTxtFile(View view) {
         DialogProperties properties = new DialogProperties();
