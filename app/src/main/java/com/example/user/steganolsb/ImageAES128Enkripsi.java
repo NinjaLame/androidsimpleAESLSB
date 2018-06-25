@@ -11,11 +11,15 @@ import java.util.List;
 public class ImageAES128Enkripsi {
     Bitmap imageBitmap;
     int Length;
-    private List<Integer> pixels= new ArrayList<Integer>();
-    private List<Integer> pixels_chiper= new ArrayList<Integer>();
+    private List<Integer> pixels= new ArrayList<Integer>();//blue
+    private List<Integer> pixels_chiper= new ArrayList<Integer>();//blue
+
+    private List<Integer> pixels_red= new ArrayList<Integer>();
+    private List<Integer> pixels_chiper_red= new ArrayList<Integer>();
 
     private String kunc;
-    private String[][][] pesanHEX=null;
+    private String[][][] pesanHEX=null;//blue
+    private String[][][] pesanHEXRed=null;
     private String[][] kunciHEX = new String[4][4];
     private String[][][] roundKey = new String[11][4][4];
     private int width;
@@ -36,14 +40,18 @@ public class ImageAES128Enkripsi {
             for(int j=0; j<imageBitmap.getHeight(); j++) {
                 int s = imageBitmap.getPixel(i,j);
                 int blue = Color.blue(s);
+                int red = Color.red(s);
                 pixels.add(blue);
+                pixels_red.add(red);
             }
         }
         //pixel akan ditambah dengan 0 apabila bukan kelipatan 16
         pixels=tambahPixel(pixels);
+        pixels_red=tambahPixel(pixels_red);
 
         jumlahBlokPesan=pixels.size()/16;
-       // pesanHEX=pesanToMatrixHex(pixels);
+        pesanHEX=pesanToMatrixHex(pixels);
+        pesanHEXRed=pesanToMatrixHex(pixels_red);
 
         kunciHEX = stringToMatrixHex(kunci);
     }
@@ -199,6 +207,7 @@ public class ImageAES128Enkripsi {
             for(int y=0; y<4; y++){
                 for(int x=0; x<4; x++){
                     pixels_chiper.add((int)Integer.parseInt(pesanHEX[i][x][y],16 ));
+                    pixels_chiper_red.add((int)Integer.parseInt(pesanHEXRed[i][x][y],16 ));
                 }
             }
         }
@@ -207,7 +216,7 @@ public class ImageAES128Enkripsi {
             for(int j=0; j<height ; j++) {
                 int px = imageBitmap.getPixel(i,j);
                 int alpha = Color.alpha(px);
-                int red = Color.red(px);
+                int red = Color.red(pixels_chiper_red.get(a));
                 int green = Color.green(px);
                 int blue = Color.blue(pixels_chiper.get(a));
 
@@ -347,6 +356,7 @@ public class ImageAES128Enkripsi {
             for(int y=0; y<4; y++){
                 for(int x=0; x<4; x++){
                     pesanHEX[i][y][x] = xorStringHex(pesanHEX[i][y][x],roundKey[n][y][x]);
+                    pesanHEXRed[i][y][x] = xorStringHex(pesanHEXRed[i][y][x],roundKey[n][y][x]);
                 }
             }
         }
@@ -357,6 +367,7 @@ public class ImageAES128Enkripsi {
             for (int y=0;y<4;y++){
                 for (int x=0;x<4;x++){
                     pesanHEX[i][y][x] = SBOX[ Integer.parseInt(Character.toString(pesanHEX[i][y][x].charAt(0)), 16)][ Integer.parseInt(Character.toString(pesanHEX[i][y][x].charAt(1)), 16)];
+                    pesanHEXRed[i][y][x] = SBOX[ Integer.parseInt(Character.toString(pesanHEXRed[i][y][x].charAt(0)), 16)][ Integer.parseInt(Character.toString(pesanHEXRed[i][y][x].charAt(1)), 16)];
                 }
             }
         }
@@ -367,11 +378,16 @@ public class ImageAES128Enkripsi {
             pesanHEX[i][1] = geser(pesanHEX[i][1],1);
             pesanHEX[i][2] = geser(pesanHEX[i][2],2);
             pesanHEX[i][3] = geser(pesanHEX[i][3],3);
+
+            pesanHEXRed[i][1] = geser(pesanHEXRed[i][1],1);
+            pesanHEXRed[i][2] = geser(pesanHEXRed[i][2],2);
+            pesanHEXRed[i][3] = geser(pesanHEXRed[i][3],3);
         }
     }
 
     private void mixColumn(){
         String[] kolomHasil = new String[4];
+        String[] kolomHasilRed = new String[4];
         for(int i=0;i<jumlahBlokPesan;i++){
             for(int c=0;c<4;c++){
                 kolomHasil[0] =  xor4StringHex   (
@@ -398,10 +414,41 @@ public class ImageAES128Enkripsi {
                         lookUp(pesanHEX[i][2][c],MATRIXMC[3][2]),
                         lookUp(pesanHEX[i][3][c],MATRIXMC[3][3])
                 );
+
+                kolomHasilRed[0] =  xor4StringHex   (
+                        lookUp(pesanHEXRed[i][0][c],MATRIXMC[0][0]),
+                        lookUp(pesanHEXRed[i][1][c],MATRIXMC[0][1]),
+                        lookUp(pesanHEXRed[i][2][c],MATRIXMC[0][2]),
+                        lookUp(pesanHEXRed[i][3][c],MATRIXMC[0][3])
+                );
+                kolomHasilRed[1] =  xor4StringHex   (
+                        lookUp(pesanHEXRed[i][0][c],MATRIXMC[1][0]),
+                        lookUp(pesanHEXRed[i][1][c],MATRIXMC[1][1]),
+                        lookUp(pesanHEXRed[i][2][c],MATRIXMC[1][2]),
+                        lookUp(pesanHEXRed[i][3][c],MATRIXMC[1][3])
+                );
+                kolomHasilRed[2] =  xor4StringHex   (
+                        lookUp(pesanHEXRed[i][0][c],MATRIXMC[2][0]),
+                        lookUp(pesanHEXRed[i][1][c],MATRIXMC[2][1]),
+                        lookUp(pesanHEXRed[i][2][c],MATRIXMC[2][2]),
+                        lookUp(pesanHEXRed[i][3][c],MATRIXMC[2][3])
+                );
+                kolomHasilRed[3] =  xor4StringHex   (
+                        lookUp(pesanHEXRed[i][0][c],MATRIXMC[3][0]),
+                        lookUp(pesanHEXRed[i][1][c],MATRIXMC[3][1]),
+                        lookUp(pesanHEXRed[i][2][c],MATRIXMC[3][2]),
+                        lookUp(pesanHEXRed[i][3][c],MATRIXMC[3][3])
+                );
+                //blue
                 pesanHEX[i][0][c] = kolomHasil[0];
                 pesanHEX[i][1][c] = kolomHasil[1];
                 pesanHEX[i][2][c] = kolomHasil[2];
                 pesanHEX[i][3][c] = kolomHasil[3];
+                //red
+                pesanHEXRed[i][0][c] = kolomHasilRed[0];
+                pesanHEXRed[i][1][c] = kolomHasilRed[1];
+                pesanHEXRed[i][2][c] = kolomHasilRed[2];
+                pesanHEXRed[i][3][c] = kolomHasilRed[3];
             }
         }
     }
