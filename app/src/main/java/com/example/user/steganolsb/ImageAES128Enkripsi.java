@@ -15,11 +15,14 @@ public class ImageAES128Enkripsi {
     private List<Integer> pixels_chiper= new ArrayList<Integer>();//blue
 
     private List<Integer> pixels_red= new ArrayList<Integer>();
+    private List<Integer> pixels_green= new ArrayList<Integer>();
+    private List<Integer> getPixels_chiper_green= new ArrayList<Integer>();
     private List<Integer> pixels_chiper_red= new ArrayList<Integer>();
 
     private String kunc;
     private String[][][] pesanHEX=null;//blue
     private String[][][] pesanHEXRed=null;
+    private String[][][] pesanHEXGreen=null;
     private String[][] kunciHEX = new String[4][4];
     private String[][][] roundKey = new String[11][4][4];
     private int width;
@@ -41,16 +44,20 @@ public class ImageAES128Enkripsi {
                 int s = imageBitmap.getPixel(i,j);
                 int blue = Color.blue(s);
                 int red = Color.red(s);
+                int green = Color.green(s);
                 pixels.add(blue);
                 pixels_red.add(red);
+                pixels_green.add(green);
             }
         }
         //pixel akan ditambah dengan 0 apabila bukan kelipatan 16
         pixels=tambahPixel(pixels);
         pixels_red=tambahPixel(pixels_red);
+        pixels_green=tambahPixel(pixels_green);
 
         jumlahBlokPesan=pixels.size()/16;
         pesanHEX=pesanToMatrixHex(pixels);
+        pesanHEXGreen=pesanToMatrixHex(pixels_green);
         pesanHEXRed=pesanToMatrixHex(pixels_red);
 
         kunciHEX = stringToMatrixHex(kunci);

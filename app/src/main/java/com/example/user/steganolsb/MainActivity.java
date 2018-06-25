@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         ImageAES128Enkripsi t = new ImageAES128Enkripsi(myBitmap,kunci);
         t.enkripsi();
         myBitmap=t.generate();
+        ////inti  fnsdnfnkgn
 
 //        LSB t = new LSB(myBitmap);
   //      myBitmap = t.embeding(teks);
