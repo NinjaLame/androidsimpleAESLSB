@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     tools:context=".MainActivity">
 
     <Button
@@ -12,10 +13,18 @@
         android:layout_height="wrap_content"
         android:text="Buka galery"
         android:onClick="galery"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih File Text"
+        android:onClick="getTxtFile"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Plain Text"
+        android:maxLines="4"
+        android:scrollbars="vertical"
         android:id="@+id/pText"
         />
     <EditText
@@ -39,6 +48,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scrollbars = "vertical"
+        android:maxLines="4"
         android:id="@+id/chiperText"
         android:padding="10px"
         />
