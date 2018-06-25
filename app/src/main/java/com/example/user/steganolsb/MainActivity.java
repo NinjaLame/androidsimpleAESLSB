@@ -157,19 +157,11 @@ public class MainActivity extends AppCompatActivity {
         Bitmap myBitmap = BitmapFactory.decodeFile(uri);
         myBitmap = myBitmap.copy( Bitmap.Config.ARGB_8888 , true);
 //        ProgressDialog.show(this, "Loading", "Wait while pixels changes...");
-<<<<<<< HEAD
         String kunci=kTeks.getText().toString();
         ImageAES128Enkripsi t = new ImageAES128Enkripsi(myBitmap,kunci);
         //t.enkripsi();
         //myBitmap=t.generate();
 
-=======
-        LSB t = new LSB(myBitmap);
-        myBitmap = t.embeding(teks);
-
-
-//        Toast.makeText(this, te.length(), Toast.LENGTH_SHORT).show();
->>>>>>> 04cab7c896c21741e71d794d180561865601d348
         String FilePath = pathFile;
 
         try {
